@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const crypted = require('crypto');
 const { MONGO_URI } = process.env;
 
-
+const { TOKEN_KEY } = process.env;
 const mongoose = require('mongoose').default;
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
@@ -55,10 +55,9 @@ app.post("/register", async (req, res) => {
     try {
         // Get user input
         const {email, password} = req.body;
-
         // Validate user input
         if (!(email && password)) {
-            res.status(400).send("All input is required");
+            res.status(400).send("All inputs are required");
         }
 
         // check if user already exist
@@ -78,12 +77,10 @@ app.post("/register", async (req, res) => {
             password: encryptedPassword,
         });
 
-        // Generate a random string with a length of 32 characters
-        const randomString = crypted.randomBytes(16).toString('hex');
         // Create token
         const token = jwt.sign(
             {user_id: user._id, email},
-            randomString,
+            TOKEN_KEY,
             {
                 expiresIn: "2h",
             }
@@ -109,20 +106,17 @@ app.post("/login", async (req, res) => {
 
         // Validate user input
         if (!(email && password)) {
-            res.status(400).send("All input is required");
+            res.status(400).send("All inputs are required");
         }
         // Validate if user exist in our database
         const user = await User.findOne({ email });
 
-        console.log('user._doc.password', user._doc.password)
         if (user && (await bcrypt.compare(password, user._doc.password))) {
 
-            // Generate a random string with a length of 32 characters
-            const randomString = crypted.randomBytes(16).toString('hex');
             // Create token
             const token = jwt.sign(
                 { user_id: user._id, email },
-                randomString,
+                TOKEN_KEY,
                 {
                     expiresIn: "2h",
                 }
@@ -130,7 +124,7 @@ app.post("/login", async (req, res) => {
 
             // save user token
             user.token = token;
-
+            console.log('before answer')
             // user
             res.status(200).json(user);
         }
@@ -139,6 +133,38 @@ app.post("/login", async (req, res) => {
         console.log(err);
     }
 });
+
+//validate token
+const validateToken = (req, res, next) => {
+    // Get the token from the request headers, query parameters, or cookies
+    const token = req.headers.authorization || req.query.token || req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    // Verify the token
+    const newToken = token.slice(7)
+    jwt.verify(newToken, TOKEN_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        // If the token is valid, you can access the decoded data in `decoded` object
+        req.userId = decoded.user_id;
+
+        next();
+    });
+};
+
+// Apply the token validation middleware to the desired routes
+app.get('/validate_token', validateToken, (req, res) => {
+    // This route will only be accessible if the token is valid
+    // You can access the user ID using `req.userId`
+    console.log('res.json', res.json({ message: 'Access granted' }))
+    res.json({ message: 'Access granted' });
+});
+
 
 //get catalogs
 app.get("/get_catalogs", async (req, res) => {
@@ -156,15 +182,18 @@ app.get("/get_catalogs", async (req, res) => {
     }
 });
 
-//add catalog TODO need to check if primary of this type exists before creating
+//add catalog
 app.post("/add_catalog", async (req, res) => {
     try {
         const { name, vertical, is_primary } = req.body;
 
+        if (name === '' || vertical === '' || is_primary === null ) {
+            res.status(400).json({ error: 'Add required values'});
+        }
         // Validate if catalog exist in our database
         const existing_catalog = await Catalog.findOne({ name });
         if (existing_catalog) {
-            throw new Error('Catalog already exists');
+            res.status(400).json({ error: 'Catalog already exists'});
         }
 
         // Check if the primary catalog for this vertical already exists
@@ -172,7 +201,7 @@ app.post("/add_catalog", async (req, res) => {
 
         const primaryCatalogExists = catalogs.some(cat => cat.vertical === vertical && cat.is_primary === true && is_primary === true);
         if (primaryCatalogExists) {
-            throw new Error('The primary catalog for this vertical already exists');
+            res.status(400).json({ error: 'The primary catalog for this vertical already exists' });
         }
 
         // Create catalog in our database
