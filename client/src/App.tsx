@@ -10,7 +10,7 @@ const styles = {
         display: "flex",
         justifyContent: 'center',
         flex: 1,
-        background:'linear-gradient(rgba(70, 130, 180, 0.70),#0047AB)',
+        background:'linear-gradient(rgba(255, 248, 220, 0.20),#EADDCA)',
         height: '100vh',
     }
 } as const;

@@ -17,6 +17,7 @@ const styles = {
         display: "flex",
         height: "100%",
         backgroundColor: '#FFFFFF',
+        minWidth: 370
     },
     innerContainer: {
         display: "flex",
@@ -40,12 +41,7 @@ const styles = {
         borderWidth: 1,
         borderColor: 'rgba(141, 141, 141, 0.15)',
         marginBottom: 20,
-        shadowColor: '#000',
         backgroundColor: "white" ,
-        shadowOffset: {width: 6, height: 6},
-        shadowRadius: 10,
-        shadowOpacity: 0.15,
-        elevation: 1,
     },
     fieldError: {
         flexDirection: 'row',
@@ -53,16 +49,12 @@ const styles = {
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#EC6868',
-        shadowColor: '#000',
         backgroundColor: "#FFE8E8" ,
-        shadowOffset: {width: 6, height: 6},
-        shadowRadius: 10,
-        shadowOpacity: 0.15,
-        elevation: 1,
     },
     inputText: {
         padding: 10,
-        paddingVertical:13.5,
+        paddingTop:13.5,
+        paddingBottom: 13.5,
         alignItems: "flex-start",
         fontSize: 16,
         color: '#6C6C6C',
@@ -100,9 +92,8 @@ const Login = () => {
         }
     }
 
-    const onSubmitSend = useCallback(async (values: TypeFormValues) => {//TODO add type
+    const onSubmitSend = useCallback(async (values: TypeFormValues) => {
         if (values) {
-            console.log('values', values)
             const res = await userLogin(values.email, values.password)
             if (typeof res === 'string') {
                 navigate("/catalogs")
@@ -110,7 +101,7 @@ const Login = () => {
                 setLoginError("incorrect credentials")
             }
         }
-    }, [])
+    }, [navigate])
 
     return (
         <div style={styles.container}>
@@ -144,7 +135,7 @@ const Login = () => {
                                     setLoginError('')
                                 }}
                             />
-                            <div style={{paddingTop: 5}}>
+                            <div style={{paddingBottom: 50}}>
                                 <LoginButton
                                     onPressButton={handleSubmit}
                                     isDisabled={!(touched.email || touched.password )}

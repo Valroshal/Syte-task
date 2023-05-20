@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ItemButton from '../components/ItemButton'
 import Modal from 'react-modal';
-import {TypeCatalog, Vertical} from "../../../consts/types";
+import {TypeCatalog} from "../../../consts/types";
 import {useCallback, useState} from "react";
 import {addCatalog} from "../../../queries/catalog";
 import * as consts from '../../../consts/consts'
@@ -42,7 +42,8 @@ const styles = {
         flexDirection: "row",
         justifyContent: "center",
         gap: 10,
-        paddingVertical: 10
+        paddingTop: 10,
+        paddingBottom: 10
     },
     image: {
         height: 24,
@@ -83,7 +84,7 @@ const AddCatalog: React.FC<Props> = ({onAdd, onClose, isOpen}) => {
                 onClose()
             }
         }
-    }, [name, vertical, is_primary])
+    }, [name, vertical, is_primary, onAdd, onClose])
 
     const handleIsPrimary = useCallback((val: string) => {
         if (val === 'true') {

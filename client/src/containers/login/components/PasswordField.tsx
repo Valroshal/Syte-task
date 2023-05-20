@@ -10,44 +10,33 @@ const styles = {
     field: {
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: 'rgba(141, 141, 141, 0.15)',
+        borderColor: '#DDDDDD',
         marginBottom: 20,
-        shadowColor: '#000',
-        backgroundColor: "white" ,
-        shadowOffset: {width: 6, height: 6},
-        shadowRadius: 10,
-        shadowOpacity: 0.15,
-        elevation: 1,
+        backgroundColor: "white",
     },
     fieldError: {
+        display: 'flex',
         flexDirection: 'row',
-        justifyContent: "space-between",
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#EC6868',
-        shadowColor: '#000',
-        backgroundColor: "#FFE8E8" ,
-        shadowOffset: {width: 6, height: 6},
-        shadowRadius: 10,
-        shadowOpacity: 0.15,
-        elevation: 1,
     },
     inputText: {
         padding: 10,
-        paddingVertical:13.5,
+        paddingTop: 13.5,
+        paddingBottom: 13.5,
         alignItems: "flex-start",
         fontSize: 16,
-        fontFamily:'Lato' ,
-        color: '#28230E',
+        color: '#6C6C6C',
     },
     inputTextError: {
         padding: 10,
         paddingTop: 13.5,
         paddingBottom: 13.5,
         alignItems: "flex-start",
-        fontSize: 20,
-        color: '#28230E',
-        fontFamily:'Lato' ,
+        fontSize: 16,
+        color: '#EC6868',
+        backgroundColor: "#FFE8E8" ,
     },
     errorText: {
         fontSize: 12,
@@ -79,7 +68,7 @@ const PasswordField: React.FC<Props> = ({onChangePassword}) => {
             >
                 <input
                     placeholder="Password"
-                    style={(errors.password && touched.password) ? styles.inputTextError : styles.inputText}
+                    style={errors.password ? styles.inputTextError : styles.inputText}
                     onChange={handleChange('password')}
                     onBlur={handleBlur('password')}
                     value={values.password}

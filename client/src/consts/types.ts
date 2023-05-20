@@ -1,5 +1,3 @@
-export type Vertical = 'fashion' | 'home' | 'general'
-
 export interface TypeCatalog {
     _id?: string
     name: string

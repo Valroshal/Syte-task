@@ -7,9 +7,9 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         height: 48,
-        borderRadius: 8,
+        borderRadius: 4,
         backgroundColor: '#FFDEA8',
-        minWidth: 100
+        minWidth: 217
     },
     disabled: {
 
