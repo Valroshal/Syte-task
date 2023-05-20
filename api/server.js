@@ -4,7 +4,6 @@ const app = express()
 const cors = require("cors")
 const bodyParser = require('body-parser');
 
-// const mongoose = require('mongoose').default;
 //env imports
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;

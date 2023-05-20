@@ -15,12 +15,14 @@ const addCatalog = async (req, res) => {
         }
 
         // Check if the primary catalog for this vertical already exists
-        const catalogs = await Catalog.find().exec();
-        const primaryCatalogExists = catalogs.some(
-            (cat) => cat.vertical === vertical && cat.is_primary === true && is_primary === true
-        );
-        if (primaryCatalogExists) {
-            return res.status(400).json({ error: 'The primary catalog for this vertical already exists' });
+        if (is_primary === true) {
+            const catalogs = await Catalog.find().exec();
+            const primaryCatalogExists = catalogs.some(
+                (cat) => cat.vertical === vertical && cat.is_primary === true && is_primary === true
+            );
+            if (primaryCatalogExists) {
+                return res.status(400).json({ error: 'The primary catalog for this vertical already exists' });
+            }
         }
 
         // Create catalog in our database
