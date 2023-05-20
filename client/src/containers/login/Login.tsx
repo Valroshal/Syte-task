@@ -135,7 +135,7 @@ const Login = () => {
                                     setLoginError('')
                                 }}
                             />
-                            <div style={{paddingBottom: 50}}>
+                            <div style={{paddingTop: 5}}>
                                 <LoginButton
                                     onPressButton={handleSubmit}
                                     isDisabled={!(touched.email || touched.password )}
